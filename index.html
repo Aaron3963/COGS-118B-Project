@@ -292,7 +292,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>df.drop(columns<span class="op">=</span>[<span class="st">"Release Date 2"</span>],inplace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Reshaping <code>Review Summary</code> columns into numeric categories. | Category | Value | |—————————|——–| | Overwhelmingly Positive | 2 | | Very Positive | 1.5 | | Positive | 1 | | Mostly Positive | 0.5 | | Mixed / Not enough reviews| 0 | | Mostly Negative | -0.5 | | Negative | -1 | | Very Negative | -1.5 | | Overwhelmingly Negative | -2 |</p>
+<p>Reshaping <code>Review Summary</code> columns into numeric categories.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Category</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Overwhelmingly Positive</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>Very Positive</td>
+<td>1.5</td>
+</tr>
+<tr class="odd">
+<td>Positive</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>Mostly Positive</td>
+<td>0.5</td>
+</tr>
+<tr class="odd">
+<td>Mixed / Not enough reviews</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>Mostly Negative</td>
+<td>-0.5</td>
+</tr>
+<tr class="odd">
+<td>Negative</td>
+<td>-1</td>
+</tr>
+<tr class="even">
+<td>Very Negative</td>
+<td>-1.5</td>
+</tr>
+<tr class="odd">
+<td>Overwhelmingly Negative</td>
+<td>-2</td>
+</tr>
+</tbody>
+</table>
 <div id="cell-27" class="cell" data-execution_count="35">
 <details class="code-fold">
 <summary>Code</summary>
