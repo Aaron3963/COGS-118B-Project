@@ -155,7 +155,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data" class="level1">
 <h1>Data</h1>
 <p>We will be using the <a href="https://www.kaggle.com/datasets/nikatomashvili/steam-games-dataset">Steam Games Dataset</a> from Kaggle. It has 71000 game data points, with around 15 variables, including <code>Price</code>, <code>Review Rate</code>, <code>Release Date</code>, <code>Tag</code>,.etc.</p>
-<div id="cell-6" class="cell" data-execution_count="23">
+<div id="cell-6" class="cell" data-execution_count="1">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -163,12 +163,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Here’s what an observation consist of:</p>
-<div id="cell-8" class="cell" data-execution_count="24">
+<div id="cell-8" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="24">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <pre><code>Index(['Title', 'Original Price', 'Discounted Price', 'Release Date', 'Link',
        'Game Description', 'Recent Reviews Summary', 'All Reviews Summary',
        'Recent Reviews Number', 'All Reviews Number', 'Developer', 'Publisher',
@@ -177,7 +177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       dtype='object')</code></pre>
 </div>
 </div>
-<div id="cell-9" class="cell" data-execution_count="25">
+<div id="cell-9" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.iloc[<span class="dv">0</span>].iloc[<span class="dv">13</span>]) <span class="co"># Tag</span></span>
@@ -193,13 +193,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data-pre-processing" class="level1">
 <h1>Data Pre-processing</h1>
 <p>Remove unused columns.</p>
-<div id="cell-13" class="cell" data-execution_count="26">
+<div id="cell-13" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df.drop(columns<span class="op">=</span>[<span class="st">'Title'</span>,<span class="st">'Game Description'</span>, <span class="st">'Developer'</span>, <span class="st">'Publisher'</span>, <span class="st">'Minimum Requirements'</span>],inplace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-14" class="cell" data-execution_count="27">
+<div id="cell-14" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Clean prices</span></span>
@@ -208,7 +208,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Change game names to unique <code>GameID</code>s.</p>
-<div id="cell-16" class="cell" data-execution_count="28">
+<div id="cell-16" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Clean gameID</span></span>
@@ -217,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Change <code>Release Date</code> into <code>datetime</code> format.</p>
-<div id="cell-18" class="cell" data-execution_count="29">
+<div id="cell-18" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_date(date_str):</span>
@@ -230,7 +230,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Release Date 2'</span>] <span class="op">=</span> df[<span class="st">'Release Date'</span>].<span class="bu">apply</span>(parse_date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-19" class="cell" data-execution_count="30">
+<div id="cell-19" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rows_to_update <span class="op">=</span> df[df[<span class="st">'Release Date 2'</span>].isna()]</span>
@@ -242,7 +242,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>df.loc[rows_to_update.index, <span class="st">'Release Date 2'</span>] <span class="op">=</span> pd.to_datetime(rows_to_update[<span class="st">'Release Date'</span>], <span class="bu">format</span><span class="op">=</span>date_format, errors<span class="op">=</span> <span class="st">'coerce'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-20" class="cell" data-execution_count="31">
+<div id="cell-20" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rows_to_update <span class="op">=</span> df[df[<span class="st">'Release Date 2'</span>].isna()]</span>
@@ -255,12 +255,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Check to see what are the non-<code>datetime</code> entries.</p>
-<div id="cell-22" class="cell" data-execution_count="32">
+<div id="cell-22" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df[df[<span class="st">'Release Date 2'</span>].isna()][<span class="st">"Release Date"</span>].unique()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="32">
+<div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>array([nan, 'Coming soon', 'To be announced', '2023', 'Q3 2023',
        'Q2 2024', '2024', 'Q1 2024', '2025', 'Q1 2025', 'Q4 2023',
        'Q4 2024', 'Q3 2024', '2026', 'Q2 2025', 'Maybe', 'Q3 2032',
@@ -268,17 +268,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
        '9 Jun, 6969'], dtype=object)</code></pre>
 </div>
 </div>
-<div id="cell-23" class="cell" data-execution_count="33">
+<div id="cell-23" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df[df[<span class="st">'Release Date 2'</span>].isna()][<span class="st">"Release Date"</span>].isna().<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="33">
+<div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>131</code></pre>
 </div>
 </div>
 <p>Looks like most of them are just games waiting to be released. There is about 9800 of them, which is not a small proportion of the dataset. Only 131 games are ones with <code>NaT</code>, we will drop these games. For future released games, we will set their release date to be <code>2025-01-01</code>.</p>
-<div id="cell-25" class="cell" data-execution_count="34">
+<div id="cell-25" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna(subset<span class="op">=</span>[<span class="st">'Release Date'</span>])</span>
@@ -339,7 +339,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<div id="cell-27" class="cell" data-execution_count="35">
+<div id="cell-27" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Reshape reviews</span></span>
@@ -371,25 +371,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'All Reviews Summary'</span>] <span class="op">=</span> df[<span class="st">'All Reviews Summary'</span>].replace(category_mapping)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-28" class="cell" data-execution_count="36">
+<div id="cell-28" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>numeric_values <span class="op">=</span> df[<span class="st">'Recent Reviews Number'</span>].<span class="bu">str</span>.extract(<span class="vs">r'(\d+,\d+) user reviews'</span>)[<span class="dv">0</span>].<span class="bu">str</span>.replace(<span class="st">','</span>, <span class="st">''</span>).astype(<span class="bu">float</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>percentage_values <span class="op">=</span> df[<span class="st">'Recent Reviews Number'</span>].<span class="bu">str</span>.extract(<span class="vs">r'(\d+)%'</span>)[<span class="dv">0</span>].astype(<span class="bu">float</span>) <span class="op">/</span> <span class="dv">100</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Recent Positive Reviews'</span>] <span class="op">=</span> numeric_values <span class="op">*</span> percentage_values</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Recent Reviews'</span>] <span class="op">=</span> numeric_values</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Recent Positive Ratio'</span>] <span class="op">=</span> percentage_values</span>
 <span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>numeric_values <span class="op">=</span> df[<span class="st">'All Reviews Number'</span>].<span class="bu">str</span>.extract(<span class="vs">r'(\d+,\d+) user reviews'</span>)[<span class="dv">0</span>].<span class="bu">str</span>.replace(<span class="st">','</span>, <span class="st">''</span>).astype(<span class="bu">float</span>)</span>
 <span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>percentage_values <span class="op">=</span> df[<span class="st">'All Reviews Number'</span>].<span class="bu">str</span>.extract(<span class="vs">r'(\d+)%'</span>)[<span class="dv">0</span>].astype(<span class="bu">float</span>) <span class="op">/</span> <span class="dv">100</span></span>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'All Positive Reviews'</span>] <span class="op">=</span> numeric_values <span class="op">*</span> percentage_values</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>df.drop(columns<span class="op">=</span>[<span class="st">'Recent Reviews Number'</span>,<span class="st">'All Reviews Number'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Reviews Total'</span>] <span class="op">=</span> numeric_values</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Positive Ratio Total'</span>] <span class="op">=</span> percentage_values</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>df.drop(columns<span class="op">=</span>[<span class="st">'Recent Reviews Number'</span>,<span class="st">'All Reviews Number'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Reshape <code>Language Support</code> into a one-hot encoder.</p>
-<div id="cell-30" class="cell" data-execution_count="37">
+<div id="cell-30" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> MultiLabelBinarizer</span>
@@ -409,7 +410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">"#lang_slovakian"</span>],inplace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-31" class="cell" data-execution_count="38">
+<div id="cell-31" class="cell" data-execution_count="16">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.concat([df, one_hot_encoded_languages], axis<span class="op">=</span><span class="dv">1</span>)</span>
@@ -420,7 +421,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Reshape <code>Popular Tags</code> into a one-hot encoder.</p>
-<div id="cell-33" class="cell" data-execution_count="39">
+<div id="cell-33" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Popular Tags'</span>] <span class="op">=</span> df[<span class="st">'Popular Tags'</span>].<span class="bu">apply</span>(ast.literal_eval)</span>
@@ -437,7 +438,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Reshape <code>Game Features</code> into a one-hot encoder.</p>
-<div id="cell-35" class="cell" data-execution_count="40">
+<div id="cell-35" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Game Features'</span>] <span class="op">=</span> df[<span class="st">'Game Features'</span>].<span class="bu">apply</span>(ast.literal_eval)</span>
@@ -454,31 +455,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Reordering columns for better reading experience.</p>
-<div id="cell-37" class="cell" data-execution_count="41">
+<div id="cell-37" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[[<span class="st">'GameID'</span>,<span class="st">'Release Date'</span>,<span class="st">'Original Price'</span>, <span class="st">'Discounted Price'</span>, </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>       <span class="st">'Recent Reviews Summary'</span>, <span class="st">'All Reviews Summary'</span>, </span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>       <span class="st">'Recent Positive Reviews'</span>, <span class="st">'All Positive Reviews'</span>,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>       <span class="st">'Recent Reviews'</span>, <span class="st">'Recent Positive Ratio'</span>, </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>       <span class="st">'Reviews Total'</span>, <span class="st">'Positive Ratio Total'</span>,</span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>       <span class="st">'OneHot Encoded Languages'</span>, <span class="st">'OneHot Encoded Tags'</span>,</span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>       <span class="st">'OneHot Encoded Features'</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Some games do not have recent reviews, or just have no reviews at all. Replacing these with zero.</p>
-<div id="cell-39" class="cell" data-execution_count="42">
+<div id="cell-39" class="cell" data-execution_count="20">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>na_to_zero_cols <span class="op">=</span> [<span class="st">'Recent Reviews Summary'</span>,<span class="st">'All Reviews Summary'</span>,<span class="st">'Recent Positive Reviews'</span>,<span class="st">'All Positive Reviews'</span>]</span>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>na_to_zero_cols <span class="op">=</span> [<span class="st">'Recent Reviews'</span>, <span class="st">'Recent Positive Ratio'</span>, <span class="st">'Reviews Total'</span>, <span class="st">'Positive Ratio Total'</span>,]</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>df[na_to_zero_cols] <span class="op">=</span> df[na_to_zero_cols].fillna(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Cleaned dataset:</p>
-<div id="cell-41" class="cell" data-execution_count="43">
+<div id="cell-41" class="cell" data-execution_count="21">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="43">
+<div class="cell-output cell-output-display" data-execution_count="21">
 <div>
 <div>
 
@@ -491,10 +492,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <th data-quarto-table-cell-role="th">Release Date</th>
 <th data-quarto-table-cell-role="th">Original Price</th>
 <th data-quarto-table-cell-role="th">Discounted Price</th>
-<th data-quarto-table-cell-role="th">Recent Reviews Summary</th>
-<th data-quarto-table-cell-role="th">All Reviews Summary</th>
-<th data-quarto-table-cell-role="th">Recent Positive Reviews</th>
-<th data-quarto-table-cell-role="th">All Positive Reviews</th>
+<th data-quarto-table-cell-role="th">Recent Reviews</th>
+<th data-quarto-table-cell-role="th">Recent Positive Ratio</th>
+<th data-quarto-table-cell-role="th">Reviews Total</th>
+<th data-quarto-table-cell-role="th">Positive Ratio Total</th>
 <th data-quarto-table-cell-role="th">OneHot Encoded Languages</th>
 <th data-quarto-table-cell-role="th">OneHot Encoded Tags</th>
 <th data-quarto-table-cell-role="th">OneHot Encoded Features</th>
@@ -507,10 +508,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>2023-08-03</td>
 <td>29.99</td>
 <td>29.99</td>
-<td>2.0</td>
-<td>1.5</td>
-<td>123744.00</td>
-<td>177299.98</td>
+<td>128900.0</td>
+<td>0.96</td>
+<td>188617.0</td>
+<td>0.94</td>
 <td>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...</td>
 <td>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...</td>
 <td>[0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, ...</td>
@@ -521,10 +522,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>2012-08-21</td>
 <td>14.99</td>
 <td>14.99</td>
-<td>1.5</td>
-<td>1.5</td>
-<td>67002.76</td>
-<td>377450.48</td>
+<td>75284.0</td>
+<td>0.89</td>
+<td>428921.0</td>
+<td>0.88</td>
 <td>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, ...</td>
 <td>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...</td>
 <td>[0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, ...</td>
@@ -535,10 +536,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>2020-11-04</td>
 <td>0.00</td>
 <td>0.00</td>
-<td>0.0</td>
-<td>1.5</td>
-<td>12077.65</td>
-<td>561277.60</td>
+<td>18581.0</td>
+<td>0.65</td>
+<td>701597.0</td>
+<td>0.80</td>
 <td>[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...</td>
 <td>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...</td>
 <td>[0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, ...</td>
@@ -549,10 +550,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>2021-11-08</td>
 <td>34.78</td>
 <td>17.39</td>
-<td>1.5</td>
-<td>1.5</td>
-<td>3584.40</td>
-<td>108382.56</td>
+<td>4120.0</td>
+<td>0.87</td>
+<td>123162.0</td>
+<td>0.88</td>
 <td>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...</td>
 <td>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...</td>
 <td>[0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, ...</td>
@@ -563,10 +564,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>2022-10-27</td>
 <td>0.00</td>
 <td>0.00</td>
-<td>0.0</td>
-<td>0.0</td>
-<td>4045.93</td>
-<td>135019.32</td>
+<td>8257.0</td>
+<td>0.49</td>
+<td>236876.0</td>
+<td>0.57</td>
 <td>[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...</td>
 <td>[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...</td>
 <td>[0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, ...</td>
