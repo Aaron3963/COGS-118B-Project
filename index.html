@@ -89,6 +89,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#problem-statement" id="toc-problem-statement" class="nav-link" data-scroll-target="#problem-statement">Problem Statement</a></li>
   <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
   <li><a href="#data-pre-processing" id="toc-data-pre-processing" class="nav-link" data-scroll-target="#data-pre-processing">Data Pre-processing</a></li>
+  <li><a href="#data-analysis" id="toc-data-analysis" class="nav-link" data-scroll-target="#data-analysis">Data Analysis</a></li>
   <li><a href="#pca" id="toc-pca" class="nav-link" data-scroll-target="#pca">PCA</a></li>
   <li><a href="#umap" id="toc-umap" class="nav-link" data-scroll-target="#umap">UMAP</a></li>
   <li><a href="#proposed-solution" id="toc-proposed-solution" class="nav-link" data-scroll-target="#proposed-solution">Proposed Solution</a></li>
@@ -157,7 +158,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data" class="level1">
 <h1>Data</h1>
 <p>We will be using the <a href="https://www.kaggle.com/datasets/nikatomashvili/steam-games-dataset">Steam Games Dataset</a> from Kaggle. It has 71000 game data points, with around 15 variables, including <code>Price</code>, <code>Review Rate</code>, <code>Release Date</code>, <code>Tag</code>,.etc.</p>
-<div id="cell-6" class="cell" data-execution_count="1">
+<div id="cell-6" class="cell" data-execution_count="3">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -165,12 +166,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Here’s what an observation consist of:</p>
-<div id="cell-8" class="cell" data-execution_count="2">
+<div id="cell-8" class="cell" data-execution_count="4">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="2">
+<div class="cell-output cell-output-display" data-execution_count="4">
 <pre><code>Index(['Title', 'Original Price', 'Discounted Price', 'Release Date', 'Link',
        'Game Description', 'Recent Reviews Summary', 'All Reviews Summary',
        'Recent Reviews Number', 'All Reviews Number', 'Developer', 'Publisher',
@@ -179,7 +180,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       dtype='object')</code></pre>
 </div>
 </div>
-<div id="cell-9" class="cell" data-execution_count="3">
+<div id="cell-9" class="cell" data-execution_count="5">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.iloc[<span class="dv">0</span>].iloc[<span class="dv">13</span>]) <span class="co"># Tag</span></span>
@@ -195,13 +196,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data-pre-processing" class="level1">
 <h1>Data Pre-processing</h1>
 <p>Remove unused columns.</p>
-<div id="cell-13" class="cell" data-execution_count="4">
+<div id="cell-13" class="cell" data-execution_count="6">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df.drop(columns<span class="op">=</span>[<span class="st">'Title'</span>,<span class="st">'Game Description'</span>, <span class="st">'Developer'</span>, <span class="st">'Publisher'</span>, <span class="st">'Minimum Requirements'</span>],inplace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-14" class="cell" data-execution_count="5">
+<div id="cell-14" class="cell" data-execution_count="7">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Clean prices</span></span>
@@ -210,7 +211,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Change game names to unique <code>GameID</code>s.</p>
-<div id="cell-16" class="cell" data-execution_count="6">
+<div id="cell-16" class="cell" data-execution_count="8">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Clean gameID</span></span>
@@ -219,7 +220,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Change <code>Release Date</code> into <code>datetime</code> format.</p>
-<div id="cell-18" class="cell" data-execution_count="7">
+<div id="cell-18" class="cell" data-execution_count="9">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> parse_date(date_str):</span>
@@ -232,7 +233,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Release Date 2'</span>] <span class="op">=</span> df[<span class="st">'Release Date'</span>].<span class="bu">apply</span>(parse_date)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-19" class="cell" data-execution_count="8">
+<div id="cell-19" class="cell" data-execution_count="10">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rows_to_update <span class="op">=</span> df[df[<span class="st">'Release Date 2'</span>].isna()]</span>
@@ -244,7 +245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>df.loc[rows_to_update.index, <span class="st">'Release Date 2'</span>] <span class="op">=</span> pd.to_datetime(rows_to_update[<span class="st">'Release Date'</span>], <span class="bu">format</span><span class="op">=</span>date_format, errors<span class="op">=</span> <span class="st">'coerce'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-20" class="cell" data-execution_count="9">
+<div id="cell-20" class="cell" data-execution_count="11">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rows_to_update <span class="op">=</span> df[df[<span class="st">'Release Date 2'</span>].isna()]</span>
@@ -257,12 +258,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Check to see what are the non-<code>datetime</code> entries.</p>
-<div id="cell-22" class="cell" data-execution_count="10">
+<div id="cell-22" class="cell" data-execution_count="12">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df[df[<span class="st">'Release Date 2'</span>].isna()][<span class="st">"Release Date"</span>].unique()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="10">
+<div class="cell-output cell-output-display" data-execution_count="12">
 <pre><code>array([nan, 'Coming soon', 'To be announced', '2023', 'Q3 2023',
        'Q2 2024', '2024', 'Q1 2024', '2025', 'Q1 2025', 'Q4 2023',
        'Q4 2024', 'Q3 2024', '2026', 'Q2 2025', 'Maybe', 'Q3 2032',
@@ -270,17 +271,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
        '9 Jun, 6969'], dtype=object)</code></pre>
 </div>
 </div>
-<div id="cell-23" class="cell" data-execution_count="11">
+<div id="cell-23" class="cell" data-execution_count="13">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df[df[<span class="st">'Release Date 2'</span>].isna()][<span class="st">"Release Date"</span>].isna().<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div class="cell-output cell-output-display" data-execution_count="13">
 <pre><code>131</code></pre>
 </div>
 </div>
 <p>Looks like most of them are just games waiting to be released. There is about 9800 of them, which is not a small proportion of the dataset. Only 131 games are ones with <code>NaT</code>, we will drop these games. For future released games, we will set their release date to be <code>2025-01-01</code>.</p>
-<div id="cell-25" class="cell" data-execution_count="12">
+<div id="cell-25" class="cell" data-execution_count="14">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.dropna(subset<span class="op">=</span>[<span class="st">'Release Date'</span>])</span>
@@ -341,7 +342,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<div id="cell-27" class="cell" data-execution_count="13">
+<div id="cell-27" class="cell" data-execution_count="15">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Reshape reviews</span></span>
@@ -373,26 +374,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'All Reviews Summary'</span>] <span class="op">=</span> df[<span class="st">'All Reviews Summary'</span>].replace(category_mapping)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-28" class="cell" data-execution_count="14">
+<div id="cell-28" class="cell" data-execution_count="17">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>numeric_values <span class="op">=</span> df[<span class="st">'Recent Reviews Number'</span>].<span class="bu">str</span>.extract(<span class="vs">r'(\d+,\d+) user reviews'</span>)[<span class="dv">0</span>].<span class="bu">str</span>.replace(<span class="st">','</span>, <span class="st">''</span>).astype(<span class="bu">int</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>percentage_values <span class="op">=</span> df[<span class="st">'Recent Reviews Number'</span>].<span class="bu">str</span>.extract(<span class="vs">r'(\d+)%'</span>)[<span class="dv">0</span>].astype(<span class="bu">float</span>) <span class="op">/</span> <span class="dv">100</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Recent Reviews'</span>] <span class="op">=</span> numeric_values</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Recent Positive Ratio'</span>] <span class="op">=</span> percentage_values</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>numeric_values <span class="op">=</span> df[<span class="st">'All Reviews Number'</span>].<span class="bu">str</span>.extract(<span class="vs">r'(\d+,\d+) user reviews'</span>)[<span class="dv">0</span>].<span class="bu">str</span>.replace(<span class="st">','</span>, <span class="st">''</span>).astype(<span class="bu">int</span>)</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>percentage_values <span class="op">=</span> df[<span class="st">'All Reviews Number'</span>].<span class="bu">str</span>.extract(<span class="vs">r'(\d+)%'</span>)[<span class="dv">0</span>].astype(<span class="bu">float</span>) <span class="op">/</span> <span class="dv">100</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Reviews Total'</span>] <span class="op">=</span> numeric_values</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Positive Ratio Total'</span>] <span class="op">=</span> percentage_values</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>df.drop(columns<span class="op">=</span>[<span class="st">'Recent Reviews Number'</span>,<span class="st">'All Reviews Number'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>numeric_values <span class="op">=</span> df[<span class="st">'Recent Reviews Number'</span>].<span class="bu">str</span>.extract(<span class="vs">r'(\d+,\d+) user reviews'</span>)[<span class="dv">0</span>].<span class="bu">str</span>.replace(<span class="st">','</span>, <span class="st">''</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>numeric_values <span class="op">=</span> pd.to_numeric(numeric_values, errors<span class="op">=</span><span class="st">'coerce'</span>).fillna(<span class="dv">0</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>percentage_values <span class="op">=</span> df[<span class="st">'Recent Reviews Number'</span>].<span class="bu">str</span>.extract(<span class="vs">r'(\d+)%'</span>)[<span class="dv">0</span>].astype(<span class="bu">float</span>) <span class="op">/</span> <span class="dv">100</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Recent Reviews'</span>] <span class="op">=</span> numeric_values</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Recent Positive Ratio'</span>] <span class="op">=</span> percentage_values</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>numeric_values <span class="op">=</span> df[<span class="st">'All Reviews Number'</span>].<span class="bu">str</span>.extract(<span class="vs">r'(\d+,\d+) user reviews'</span>)[<span class="dv">0</span>].<span class="bu">str</span>.replace(<span class="st">','</span>, <span class="st">''</span>)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>numeric_values <span class="op">=</span> pd.to_numeric(numeric_values, errors<span class="op">=</span><span class="st">'coerce'</span>).fillna(<span class="dv">0</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>percentage_values <span class="op">=</span> df[<span class="st">'All Reviews Number'</span>].<span class="bu">str</span>.extract(<span class="vs">r'(\d+)%'</span>)[<span class="dv">0</span>].astype(<span class="bu">float</span>) <span class="op">/</span> <span class="dv">100</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Reviews Total'</span>] <span class="op">=</span> numeric_values</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Positive Ratio Total'</span>] <span class="op">=</span> percentage_values</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>df.drop(columns<span class="op">=</span>[<span class="st">'Recent Reviews Number'</span>,<span class="st">'All Reviews Number'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Reshape <code>Language Support</code> into a one-hot encoder.</p>
-<div id="cell-30" class="cell" data-execution_count="15">
+<div id="cell-30" class="cell" data-execution_count="18">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> MultiLabelBinarizer</span>
@@ -412,7 +415,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>                                        <span class="st">"#lang_slovakian"</span>],inplace<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-31" class="cell" data-execution_count="16">
+<div id="cell-31" class="cell" data-execution_count="19">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.concat([df, one_hot_encoded_languages], axis<span class="op">=</span><span class="dv">1</span>)</span>
@@ -423,7 +426,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Reshape <code>Popular Tags</code> into a one-hot encoder.</p>
-<div id="cell-33" class="cell" data-execution_count="17">
+<div id="cell-33" class="cell" data-execution_count="20">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Popular Tags'</span>] <span class="op">=</span> df[<span class="st">'Popular Tags'</span>].<span class="bu">apply</span>(ast.literal_eval)</span>
@@ -440,7 +443,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Reshape <code>Game Features</code> into a one-hot encoder.</p>
-<div id="cell-35" class="cell" data-execution_count="18">
+<div id="cell-35" class="cell" data-execution_count="21">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Game Features'</span>] <span class="op">=</span> df[<span class="st">'Game Features'</span>].<span class="bu">apply</span>(ast.literal_eval)</span>
@@ -457,7 +460,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Reordering columns for better reading experience.</p>
-<div id="cell-37" class="cell" data-execution_count="19">
+<div id="cell-37" class="cell" data-execution_count="22">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[[<span class="st">'GameID'</span>,<span class="st">'Release Date'</span>,<span class="st">'Original Price'</span>, <span class="st">'Discounted Price'</span>, </span>
@@ -468,7 +471,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Some games do not have recent reviews, or just have no reviews at all. Replacing these with zero.</p>
-<div id="cell-39" class="cell" data-execution_count="20">
+<div id="cell-39" class="cell" data-execution_count="23">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>na_to_zero_cols <span class="op">=</span> [<span class="st">'Recent Reviews'</span>, <span class="st">'Recent Positive Ratio'</span>, <span class="st">'Reviews Total'</span>, <span class="st">'Positive Ratio Total'</span>,]</span>
@@ -582,34 +585,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="pca" class="level1">
-<h1>PCA</h1>
-<p>Drop irrelevant columns and standardize</p>
-<div id="a283daac" class="cell" data-execution_count="70">
+<section id="data-analysis" class="level1">
+<h1>Data Analysis</h1>
+<p>The Prices both before and after discount was heavily skewed to the right, leading the conclusion that most of the games were priced at the lower end of the price range. There were peaks at 0 price, indicating free games.</p>
+<div id="cell-44" class="cell" data-execution_count="24">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop non-numeric and identifier columns</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>X_PCA <span class="op">=</span> df.drop([<span class="st">'Discounted Price'</span>,<span class="st">'Release Date'</span>, <span class="st">'OneHot Encoded Languages'</span>, <span class="st">'OneHot Encoded Tags'</span>, <span class="st">'OneHot Encoded Features'</span>], axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>X_PCA.set_index(<span class="st">'GameID'</span>)</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X_PCA)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> zscore</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Apply PCA</p>
-<div id="44e32515" class="cell" data-execution_count="88">
+<div id="cell-45" class="cell" data-execution_count="25">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Try reduce to 2 dimensions</span></span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>plt.plot(pca.explained_variance_ratio_)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Price Range'</span>] <span class="op">=</span> pd.cut(df[<span class="st">'Original Price'</span>],</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                           bins<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">15</span>, <span class="dv">30</span>, <span class="dv">45</span>, <span class="bu">float</span>(<span class="st">'inf'</span>)],</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                           right<span class="op">=</span><span class="va">False</span>, </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>                           labels<span class="op">=</span>[<span class="st">'0-15'</span>, <span class="st">'15-30'</span>, <span class="st">'30-45'</span>, <span class="st">'45+'</span>])</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">6</span>))</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Price Range'</span>].value_counts().sort_index().plot(kind<span class="op">=</span><span class="st">'bar'</span>)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Histogram of Original Price Ranges'</span>)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Price Range ($)'</span>)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Number of Games'</span>)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">45</span>)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
@@ -619,15 +621,79 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+<p>From the heatmap we can see there was no significant relations between language supported and positive review. The strong positive correlation of 1.00 between these two variables implies that games with higher original prices also tend to have higher discounted prices, which is what we were expected.</p>
+<div id="cell-47" class="cell" data-execution_count="26">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'Total Languages Supported'</span>] <span class="op">=</span> df[<span class="st">'OneHot Encoded Languages'</span>].<span class="bu">apply</span>(<span class="kw">lambda</span> x: <span class="bu">sum</span>(x))</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>variables_for_correlation <span class="op">=</span> [</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Original Price'</span>, <span class="st">'Discounted Price'</span>, <span class="st">'Recent Reviews'</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Reviews Total'</span>, <span class="st">'Recent Positive Ratio'</span>, <span class="st">'Positive Ratio Total'</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Total Languages Supported'</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>correlation_matrix <span class="op">=</span> df[variables_for_correlation].corr()</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">8</span>))</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>sns.heatmap(correlation_matrix, annot<span class="op">=</span><span class="va">True</span>, cmap<span class="op">=</span><span class="st">'coolwarm'</span>, fmt<span class="op">=</span><span class="st">".2f"</span>)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Correlation Matrix including Prices and Reviews Metrics'</span>)</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="FinalProject_files/figure-html/cell-25-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="pca" class="level1">
+<h1>PCA</h1>
+<p>Drop irrelevant columns and standardize</p>
+<div id="a283daac" class="cell" data-execution_count="70">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop non-numeric and identifier columns</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>X_PCA <span class="op">=</span> df.drop([<span class="st">'Discounted Price'</span>,<span class="st">'Release Date'</span>, <span class="st">'OneHot Encoded Languages'</span>, <span class="st">'OneHot Encoded Tags'</span>, <span class="st">'OneHot Encoded Features'</span>], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>X_PCA.set_index(<span class="st">'GameID'</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X_PCA)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Apply PCA</p>
+<div id="44e32515" class="cell" data-execution_count="88">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Try reduce to 2 dimensions</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>plt.plot(pca.explained_variance_ratio_)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="FinalProject_files/figure-html/cell-27-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
 <div id="cf6be4c9" class="cell" data-execution_count="89">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select PCs using elbow methods</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>var_exp_thresh <span class="op">=</span> <span class="fl">0.9</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>total_var_exp <span class="op">=</span> np.cumsum(pca.explained_variance_ratio_)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>plt.plot(total_var_exp)<span class="op">;</span></span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>pcindex <span class="op">=</span> np.where(total_var_exp<span class="op">&gt;=</span>var_exp_thresh)[<span class="dv">0</span>]</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'take up to PC </span><span class="sc">{</span>pcindex[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> to get to </span><span class="sc">{</span>var_exp_thresh<span class="sc">}</span><span class="ss">% variance explained'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select PCs using elbow methods</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>var_exp_thresh <span class="op">=</span> <span class="fl">0.9</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>total_var_exp <span class="op">=</span> np.cumsum(pca.explained_variance_ratio_)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>plt.plot(total_var_exp)<span class="op">;</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>pcindex <span class="op">=</span> np.where(total_var_exp<span class="op">&gt;=</span>var_exp_thresh)[<span class="dv">0</span>]</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'take up to PC </span><span class="sc">{</span>pcindex[<span class="dv">0</span>]<span class="sc">}</span><span class="ss"> to get to </span><span class="sc">{</span>var_exp_thresh<span class="sc">}</span><span class="ss">% variance explained'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>take up to PC 4 to get to 0.9% variance explained</code></pre>
@@ -635,7 +701,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="FinalProject_files/figure-html/cell-25-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="FinalProject_files/figure-html/cell-28-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -643,8 +709,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="eda3ca82" class="cell" data-execution_count="90">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">4</span>)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>pca_X <span class="op">=</span> pca.fit_transform(X_scaled)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">4</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>pca_X <span class="op">=</span> pca.fit_transform(X_scaled)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -653,39 +719,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="bfd0a557" class="cell" data-execution_count="91">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> umap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> umap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Process onehot columns</p>
 <div id="77c6a45d" class="cell" data-execution_count="98">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>one_hot_languages <span class="op">=</span> pd.DataFrame(df[<span class="st">'OneHot Encoded Languages'</span>].tolist(), index<span class="op">=</span>df.index)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>one_hot_languages.columns <span class="op">=</span> [<span class="st">'Language_'</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(one_hot_languages.shape[<span class="dv">1</span>])]</span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>one_hot_tags <span class="op">=</span> pd.DataFrame(df[<span class="st">'OneHot Encoded Tags'</span>].tolist(), index<span class="op">=</span>df.index)</span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>one_hot_tags.columns <span class="op">=</span> [<span class="st">'Tag_'</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(one_hot_tags.shape[<span class="dv">1</span>])]</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>one_hot_fea <span class="op">=</span> pd.DataFrame(df[<span class="st">'OneHot Encoded Features'</span>].tolist(), index<span class="op">=</span>df.index)</span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>one_hot_fea.columns <span class="op">=</span> [<span class="st">'Feature_'</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(one_hot_fea.shape[<span class="dv">1</span>])]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>one_hot_languages <span class="op">=</span> pd.DataFrame(df[<span class="st">'OneHot Encoded Languages'</span>].tolist(), index<span class="op">=</span>df.index)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>one_hot_languages.columns <span class="op">=</span> [<span class="st">'Language_'</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(one_hot_languages.shape[<span class="dv">1</span>])]</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>one_hot_tags <span class="op">=</span> pd.DataFrame(df[<span class="st">'OneHot Encoded Tags'</span>].tolist(), index<span class="op">=</span>df.index)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>one_hot_tags.columns <span class="op">=</span> [<span class="st">'Tag_'</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(one_hot_tags.shape[<span class="dv">1</span>])]</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>one_hot_fea <span class="op">=</span> pd.DataFrame(df[<span class="st">'OneHot Encoded Features'</span>].tolist(), index<span class="op">=</span>df.index)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>one_hot_fea.columns <span class="op">=</span> [<span class="st">'Feature_'</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(one_hot_fea.shape[<span class="dv">1</span>])]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div id="ef470a82" class="cell" data-execution_count="101">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop irrelevant columns</span></span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>X_UMAP <span class="op">=</span> df.drop([<span class="st">'GameID'</span>,<span class="st">'Release Date'</span>,<span class="st">'Discounted Price'</span>,<span class="st">'OneHot Encoded Languages'</span>,<span class="st">'OneHot Encoded Tags'</span>,<span class="st">'OneHot Encoded Features'</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the processed onehot columns</span></span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>X_UMAP <span class="op">=</span> pd.concat([X_UMAP, one_hot_languages, one_hot_tags, one_hot_fea], axis <span class="op">=</span> <span class="dv">1</span>)</span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>X_UMAP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop irrelevant columns</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>X_UMAP <span class="op">=</span> df.drop([<span class="st">'GameID'</span>,<span class="st">'Release Date'</span>,<span class="st">'Discounted Price'</span>,<span class="st">'OneHot Encoded Languages'</span>,<span class="st">'OneHot Encoded Tags'</span>,<span class="st">'OneHot Encoded Features'</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the processed onehot columns</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>X_UMAP <span class="op">=</span> pd.concat([X_UMAP, one_hot_languages, one_hot_tags, one_hot_fea], axis <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>X_UMAP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div id="8ec7a491" class="cell" data-execution_count="103">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Standardize X_UMAP</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>X_UMAP_scaled <span class="op">=</span> scaler.fit_transform(X_UMAP)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Standardize X_UMAP</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>X_UMAP_scaled <span class="op">=</span> scaler.fit_transform(X_UMAP)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="103">
 <pre><code>array([[ 1.71641709, 57.57967556,  0.8767957 , ..., -0.12537822,
@@ -707,18 +773,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="bd736e6c" class="cell" data-execution_count="109">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Attempt to visualize UMAP</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>umap_5 <span class="op">=</span> umap.UMAP(n_neighbors<span class="op">=</span><span class="dv">5</span>, min_dist<span class="op">=</span><span class="fl">0.1</span>, metric<span class="op">=</span><span class="st">'euclidean'</span>)</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>ucs <span class="op">=</span> umap_5.fit_transform(X_UMAP_scaled)</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>ucs <span class="op">=</span> pd.DataFrame(ucs,columns<span class="op">=</span>[<span class="st">'c1'</span>,<span class="st">'c2'</span>])</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>ucs.index <span class="op">=</span> X_UMAP.index</span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>plot_components(ucs,<span class="st">'c1'</span>,<span class="st">'c2'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Attempt to visualize UMAP</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>umap_5 <span class="op">=</span> umap.UMAP(n_neighbors<span class="op">=</span><span class="dv">5</span>, min_dist<span class="op">=</span><span class="fl">0.1</span>, metric<span class="op">=</span><span class="st">'euclidean'</span>)</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>ucs <span class="op">=</span> umap_5.fit_transform(X_UMAP_scaled)</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>ucs <span class="op">=</span> pd.DataFrame(ucs,columns<span class="op">=</span>[<span class="st">'c1'</span>,<span class="st">'c2'</span>])</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>ucs.index <span class="op">=</span> X_UMAP.index</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>plot_components(ucs,<span class="st">'c1'</span>,<span class="st">'c2'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="FinalProject_files/figure-html/cell-31-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="FinalProject_files/figure-html/cell-34-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -726,22 +792,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="ebb8bfdd" class="cell" data-execution_count="110">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List of parameters to try</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>values_of_n_neighbors <span class="op">=</span> [<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">30</span>]</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(values_of_n_neighbors), figsize<span class="op">=</span>(<span class="dv">20</span>, <span class="dv">4</span>))</span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot UMAP plots to visualize local and global structures</span></span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, n <span class="kw">in</span> <span class="bu">enumerate</span>(values_of_n_neighbors):</span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>    reducer <span class="op">=</span> umap.UMAP(n_neighbors<span class="op">=</span>n, n_components<span class="op">=</span><span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">99</span>)</span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>    embedding <span class="op">=</span> reducer.fit_transform(X_UMAP_scaled)</span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>    axs[i].scatter(embedding[:, <span class="dv">0</span>], embedding[:, <span class="dv">1</span>], s<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    axs[i].set_title(<span class="ss">f'n_neighbors=</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List of parameters to try</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>values_of_n_neighbors <span class="op">=</span> [<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">30</span>]</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(values_of_n_neighbors), figsize<span class="op">=</span>(<span class="dv">20</span>, <span class="dv">4</span>))</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot UMAP plots to visualize local and global structures</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, n <span class="kw">in</span> <span class="bu">enumerate</span>(values_of_n_neighbors):</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>    reducer <span class="op">=</span> umap.UMAP(n_neighbors<span class="op">=</span>n, n_components<span class="op">=</span><span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">99</span>)</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    embedding <span class="op">=</span> reducer.fit_transform(X_UMAP_scaled)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>    axs[i].scatter(embedding[:, <span class="dv">0</span>], embedding[:, <span class="dv">1</span>], s<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>    axs[i].set_title(<span class="ss">f'n_neighbors=</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="FinalProject_files/figure-html/cell-32-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="FinalProject_files/figure-html/cell-35-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
