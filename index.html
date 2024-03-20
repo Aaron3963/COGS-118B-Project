@@ -660,16 +660,16 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 </section>
 <section id="pca" class="level1">
 <h1>PCA</h1>
-<p>Drop irrelevant columns and standardize</p>
-<div id="cell-50" class="cell" data-outputid="79c0c905-a9b5-486a-b682-a0daea775dd0" data-execution_count="109">
+<div id="cell-49" class="cell" data-outputid="79c0c905-a9b5-486a-b682-a0daea775dd0" data-execution_count="33">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Make the values into scale for PCA. Since PCA does not perform well in high dimensions, we temporally discard the <code>tag</code> columns.</p>
-<div id="cell-52" class="cell" data-execution_count="110">
+<div id="cell-51" class="cell" data-execution_count="26">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df_PCA <span class="op">=</span> df[[<span class="st">'Original Price'</span>, <span class="st">'Discounted Price'</span>,</span>
@@ -682,7 +682,7 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>scaled_df <span class="op">=</span> pd.DataFrame(scaled, columns<span class="op">=</span>scaler.get_feature_names_out())</span>
 <span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>scaled_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="110">
+<div class="cell-output cell-output-display" data-execution_count="26">
 <div>
 <div>
 
@@ -758,7 +758,7 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 </div>
 </div>
 </div>
-<div id="cell-53" class="cell" data-execution_count="111">
+<div id="cell-52" class="cell" data-execution_count="27">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">2</span>)</span>
@@ -769,7 +769,7 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>reduced_df[<span class="st">'Price Range'</span>] <span class="op">=</span> df[<span class="st">'Price Range'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-54" class="cell" data-execution_count="112">
+<div id="cell-53" class="cell" data-execution_count="28">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>reduced_df <span class="op">=</span> reduced_df[reduced_df[<span class="st">'pc1'</span>] <span class="op">&lt;=</span> <span class="fl">0.2</span>]</span>
@@ -800,7 +800,7 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 </div>
 </div>
 <p>Can’t tell much from the result. This is expected because the data has noise and outliers. Some hot games are free, while some are not .etc. We will try to find how many components is needed for PCA to distinguish this dataset.</p>
-<div id="cell-56" class="cell" data-execution_count="45">
+<div id="cell-55" class="cell" data-execution_count="29">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>pca2 <span class="op">=</span> PCA().fit(scaled_df)</span>
@@ -825,128 +825,97 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 </div>
 </div>
 </div>
-<div id="cell-57" class="cell">
+<div id="cell-56" class="cell" data-execution_count="31">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop non-numeric and identifier columns</span></span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> convert_range_to_midpoint(value):</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'-'</span> <span class="kw">in</span> <span class="bu">str</span>(value):</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>        low, high <span class="op">=</span> <span class="bu">map</span>(<span class="bu">float</span>, value.split(<span class="st">'-'</span>))</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (low <span class="op">+</span> high) <span class="op">/</span> <span class="dv">2</span></span>
-<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> <span class="st">'+'</span> <span class="kw">in</span> <span class="bu">str</span>(value):</span>
-<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">float</span>(value.rstrip(<span class="st">'+'</span>))</span>
-<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
-<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">float</span>(value)</span>
-<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>X_PCA[<span class="st">'Price Range'</span>] <span class="op">=</span> X_PCA[<span class="st">'Price Range'</span>].<span class="bu">apply</span>(convert_range_to_midpoint)</span>
-<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>X_PCA.set_index(<span class="st">'GameID'</span>)</span>
-<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
-<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(X_PCA)</span>
-<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>X_scaled_df <span class="op">=</span> pd.DataFrame(X_scaled, columns<span class="op">=</span>X_PCA.columns, index<span class="op">=</span>X_PCA.index)</span>
-<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a>X_scaled_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform PCA with chosen components</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>pca_opt <span class="op">=</span> PCA(n_components <span class="op">=</span> <span class="dv">4</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> pca.fit_transform(scaled_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Apply PCA</p>
-<div id="cell-59" class="cell" data-outputid="7080b488-6369-4e4a-a235-dbcf510d143a">
+<div id="cell-57" class="cell" data-outputid="7080b488-6369-4e4a-a235-dbcf510d143a" data-execution_count="34">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Try reduce to 2 dimensions</span></span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>pca.fit(X_scaled)</span>
-<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>plt.plot(pca.explained_variance_ratio_)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit K-Means</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>wcss <span class="op">=</span> []</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">11</span>):</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    kmeans_pca <span class="op">=</span> KMeans(n_clusters <span class="op">=</span> i, init <span class="op">=</span><span class="st">'k-means++'</span>, random_state <span class="op">=</span> <span class="dv">42</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    kmeans_pca.fit(scores)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    wcss.append(kmeans_pca.inertia_)</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize <span class="op">=</span> (<span class="dv">10</span>,<span class="dv">8</span>))</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(<span class="dv">1</span>,<span class="dv">11</span>), wcss, marker <span class="op">=</span> <span class="st">'o'</span>, linestyle <span class="op">=</span> <span class="st">'--'</span>)</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Number of Clusters'</span>)</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'WCSS'</span>)</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'KMeans with PCA'</span>)</span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="FinalProject_files/figure-html/cell-32-output-1.png" class="img-fluid figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<div id="cell-60" class="cell" data-outputid="699e5872-b851-4cd9-e459-f3e26a65e177">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select PCs using elbow methods</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>var_exp_thresh <span class="op">=</span> <span class="fl">0.9</span></span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>total_var_exp <span class="op">=</span> np.cumsum(pca.explained_variance_ratio_)</span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>plt.plot(total_var_exp)</span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Number of Components'</span>)</span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Cumulative Explained Variance'</span>)</span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Cumulative Explained Variance by PCA Components'</span>)</span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>pcindex <span class="op">=</span> np.where(total_var_exp <span class="op">&gt;=</span> var_exp_thresh)[<span class="dv">0</span>]</span>
-<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> pcindex.size <span class="op">&gt;</span> <span class="dv">0</span>:</span>
-<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Take up to PC </span><span class="sc">{</span>pcindex[<span class="dv">0</span>] <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss"> to get to </span><span class="sc">{</span>var_exp_thresh <span class="op">*</span> <span class="dv">100</span><span class="sc">}</span><span class="ss">% variance explained'</span>)</span>
-<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Unable to reach </span><span class="sc">{</span>var_exp_thresh <span class="op">*</span> <span class="dv">100</span><span class="sc">}</span><span class="ss">% variance explained with the given number of components.'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Unable to reach 90.0% variance explained with the given number of components.</code></pre>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\cluster\_kmeans.py:870: FutureWarning: The default value of `n_init` will change from 10 to 'auto' in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  warnings.warn(
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\cluster\_kmeans.py:870: FutureWarning: The default value of `n_init` will change from 10 to 'auto' in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  warnings.warn(
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\cluster\_kmeans.py:870: FutureWarning: The default value of `n_init` will change from 10 to 'auto' in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  warnings.warn(
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\cluster\_kmeans.py:870: FutureWarning: The default value of `n_init` will change from 10 to 'auto' in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  warnings.warn(
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\cluster\_kmeans.py:870: FutureWarning: The default value of `n_init` will change from 10 to 'auto' in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  warnings.warn(
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\cluster\_kmeans.py:870: FutureWarning: The default value of `n_init` will change from 10 to 'auto' in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  warnings.warn(
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\cluster\_kmeans.py:870: FutureWarning: The default value of `n_init` will change from 10 to 'auto' in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  warnings.warn(
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\cluster\_kmeans.py:870: FutureWarning: The default value of `n_init` will change from 10 to 'auto' in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  warnings.warn(
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\cluster\_kmeans.py:870: FutureWarning: The default value of `n_init` will change from 10 to 'auto' in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  warnings.warn(
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\cluster\_kmeans.py:870: FutureWarning: The default value of `n_init` will change from 10 to 'auto' in 1.4. Set the value of `n_init` explicitly to suppress the warning
+  warnings.warn(</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="FinalProject_files/figure-html/cell-33-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="FinalProject_files/figure-html/cell-32-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="cell-61" class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span><span class="dv">4</span>)</span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>pca_X <span class="op">=</span> pca.fit_transform(X_scaled)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
+<p>From this graph, we determine the number of clusters by using elbow method. We could see the elbow point is around 3, and thus 3 clusters.</p>
 </section>
 <section id="umap" class="level1">
 <h1>UMAP</h1>
-<div id="cell-63" class="cell">
+<div id="cell-60" class="cell" data-execution_count="37">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> umap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> umap</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Process onehot columns</p>
-<div id="cell-65" class="cell">
+<div id="cell-62" class="cell" data-execution_count="38">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>one_hot_languages <span class="op">=</span> pd.DataFrame(df[<span class="st">'OneHot Encoded Languages'</span>].tolist(), index<span class="op">=</span>df.index)</span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>one_hot_languages.columns <span class="op">=</span> [<span class="st">'Language_'</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(one_hot_languages.shape[<span class="dv">1</span>])]</span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>one_hot_tags <span class="op">=</span> pd.DataFrame(df[<span class="st">'OneHot Encoded Tags'</span>].tolist(), index<span class="op">=</span>df.index)</span>
-<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>one_hot_tags.columns <span class="op">=</span> [<span class="st">'Tag_'</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(one_hot_tags.shape[<span class="dv">1</span>])]</span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>one_hot_fea <span class="op">=</span> pd.DataFrame(df[<span class="st">'OneHot Encoded Features'</span>].tolist(), index<span class="op">=</span>df.index)</span>
-<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>one_hot_fea.columns <span class="op">=</span> [<span class="st">'Feature_'</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(one_hot_fea.shape[<span class="dv">1</span>])]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>one_hot_languages <span class="op">=</span> pd.DataFrame(df[<span class="st">'OneHot Encoded Languages'</span>].tolist(), index<span class="op">=</span>df.index)</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>one_hot_languages.columns <span class="op">=</span> [<span class="st">'Language_'</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(one_hot_languages.shape[<span class="dv">1</span>])]</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>one_hot_tags <span class="op">=</span> pd.DataFrame(df[<span class="st">'OneHot Encoded Tags'</span>].tolist(), index<span class="op">=</span>df.index)</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>one_hot_tags.columns <span class="op">=</span> [<span class="st">'Tag_'</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(one_hot_tags.shape[<span class="dv">1</span>])]</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>one_hot_fea <span class="op">=</span> pd.DataFrame(df[<span class="st">'OneHot Encoded Features'</span>].tolist(), index<span class="op">=</span>df.index)</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>one_hot_fea.columns <span class="op">=</span> [<span class="st">'Feature_'</span> <span class="op">+</span> <span class="bu">str</span>(i) <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(one_hot_fea.shape[<span class="dv">1</span>])]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div id="cell-66" class="cell" data-outputid="27c2419e-a1ae-4870-b00f-fc58c9db3dd6">
+<div id="cell-63" class="cell" data-outputid="27c2419e-a1ae-4870-b00f-fc58c9db3dd6" data-execution_count="39">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop irrelevant columns</span></span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>X_UMAP <span class="op">=</span> df.drop([<span class="st">'GameID'</span>,<span class="st">'Release Date'</span>,<span class="st">'Discounted Price'</span>,<span class="st">'OneHot Encoded Languages'</span>,<span class="st">'OneHot Encoded Tags'</span>,<span class="st">'OneHot Encoded Features'</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the processed onehot columns</span></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>X_UMAP <span class="op">=</span> pd.concat([X_UMAP, one_hot_languages, one_hot_tags, one_hot_fea], axis <span class="op">=</span> <span class="dv">1</span>)</span>
-<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>X_UMAP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Drop irrelevant columns</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>X_UMAP <span class="op">=</span> df.drop([<span class="st">'GameID'</span>,<span class="st">'Release Date'</span>,<span class="st">'Discounted Price'</span>,<span class="st">'OneHot Encoded Languages'</span>,<span class="st">'OneHot Encoded Tags'</span>,<span class="st">'OneHot Encoded Features'</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the processed onehot columns</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>X_UMAP <span class="op">=</span> pd.concat([X_UMAP, one_hot_languages, one_hot_tags, one_hot_fea], axis <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>X_UMAP</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="94">
+<div class="cell-output cell-output-display" data-execution_count="39">
 <div>
-
-  <div id="df-d865d858-937b-40c2-9b74-bb288930701d" class="colab-df-container">
-    <div>
+<div>
 
 
 <table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
@@ -964,9 +933,6 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <th data-quarto-table-cell-role="th">Language_1</th>
 <th data-quarto-table-cell-role="th">Language_2</th>
 <th data-quarto-table-cell-role="th">...</th>
-<th data-quarto-table-cell-role="th">Feature_23</th>
-<th data-quarto-table-cell-role="th">Feature_24</th>
-<th data-quarto-table-cell-role="th">Feature_25</th>
 <th data-quarto-table-cell-role="th">Feature_26</th>
 <th data-quarto-table-cell-role="th">Feature_27</th>
 <th data-quarto-table-cell-role="th">Feature_28</th>
@@ -974,6 +940,9 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <th data-quarto-table-cell-role="th">Feature_30</th>
 <th data-quarto-table-cell-role="th">Feature_31</th>
 <th data-quarto-table-cell-role="th">Feature_32</th>
+<th data-quarto-table-cell-role="th">Feature_33</th>
+<th data-quarto-table-cell-role="th">Feature_34</th>
+<th data-quarto-table-cell-role="th">Feature_35</th>
 </tr>
 </thead>
 <tbody>
@@ -984,7 +953,7 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <td>0.96</td>
 <td>188617</td>
 <td>0.94</td>
-<td>15-30</td>
+<td>16-30</td>
 <td>13</td>
 <td>0</td>
 <td>0</td>
@@ -1008,7 +977,7 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <td>0.89</td>
 <td>428921</td>
 <td>0.88</td>
-<td>0-15</td>
+<td>11-15</td>
 <td>28</td>
 <td>0</td>
 <td>0</td>
@@ -1032,7 +1001,7 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <td>0.65</td>
 <td>701597</td>
 <td>0.80</td>
-<td>0-15</td>
+<td>Free</td>
 <td>14</td>
 <td>0</td>
 <td>0</td>
@@ -1056,7 +1025,7 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <td>0.87</td>
 <td>123162</td>
 <td>0.88</td>
-<td>30-45</td>
+<td>31-45</td>
 <td>16</td>
 <td>0</td>
 <td>0</td>
@@ -1080,7 +1049,7 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <td>0.49</td>
 <td>236876</td>
 <td>0.57</td>
-<td>0-15</td>
+<td>Free</td>
 <td>14</td>
 <td>0</td>
 <td>0</td>
@@ -1122,23 +1091,23 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <td>...</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">4064</td>
-<td>10.49</td>
-<td>1242</td>
-<td>0.90</td>
+<td data-quarto-table-cell-role="th">71695</td>
+<td>0.00</td>
 <td>0</td>
 <td>0.00</td>
-<td>0-15</td>
-<td>2</td>
+<td>0</td>
+<td>0.00</td>
+<td>Free</td>
+<td>10</td>
 <td>0</td>
 <td>0</td>
 <td>0</td>
 <td>...</td>
-<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
 <td>0</td>
 <td>1</td>
-<td>0</td>
-<td>0</td>
 <td>0</td>
 <td>0</td>
 <td>0</td>
@@ -1146,14 +1115,14 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <td>0</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">4065</td>
-<td>2.99</td>
+<td data-quarto-table-cell-role="th">71696</td>
+<td>0.00</td>
 <td>0</td>
-<td>0.84</td>
-<td>4182</td>
-<td>0.93</td>
-<td>0-15</td>
-<td>4</td>
+<td>0.00</td>
+<td>0</td>
+<td>0.00</td>
+<td>Free</td>
+<td>15</td>
 <td>0</td>
 <td>0</td>
 <td>0</td>
@@ -1170,43 +1139,43 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <td>0</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">4066</td>
-<td>5.49</td>
-<td>0</td>
-<td>0.57</td>
-<td>0</td>
-<td>0.59</td>
-<td>0-15</td>
-<td>13</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>...</td>
-<td>0</td>
-<td>0</td>
-<td>1</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-<td>0</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">4067</td>
+<td data-quarto-table-cell-role="th">71697</td>
 <td>0.00</td>
 <td>0</td>
-<td>0.61</td>
+<td>0.00</td>
 <td>0</td>
 <td>0.00</td>
-<td>0-15</td>
+<td>Free</td>
 <td>3</td>
 <td>0</td>
 <td>0</td>
 <td>0</td>
 <td>...</td>
-<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">71698</td>
+<td>69.99</td>
+<td>0</td>
+<td>0.00</td>
+<td>0</td>
+<td>0.00</td>
+<td>45+</td>
+<td>15</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>...</td>
+<td>0</td>
 <td>0</td>
 <td>0</td>
 <td>0</td>
@@ -1218,14 +1187,14 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <td>0</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">4068</td>
-<td>12.49</td>
-<td>0</td>
-<td>0.93</td>
+<td data-quarto-table-cell-role="th">71699</td>
+<td>0.00</td>
 <td>0</td>
 <td>0.00</td>
-<td>0-15</td>
-<td>1</td>
+<td>0</td>
+<td>0.00</td>
+<td>Free</td>
+<td>11</td>
 <td>0</td>
 <td>0</td>
 <td>0</td>
@@ -1236,291 +1205,115 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <td>0</td>
 <td>0</td>
 <td>0</td>
-<td>1</td>
-<td>1</td>
+<td>0</td>
+<td>0</td>
 <td>0</td>
 <td>0</td>
 </tr>
 </tbody>
 </table>
 
-<p>4063 rows × 578 columns</p>
-</div>
-    <div class="colab-df-buttons">
-
-  <div class="colab-df-container">
-    <button class="colab-df-convert" onclick="convertToInteractive('df-d865d858-937b-40c2-9b74-bb288930701d')" title="Convert this dataframe to an interactive table." style="display:none;">
-
-  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 -960 960 960">
-    <path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
-  </svg>
-    </button>
-
-  <style>
-    .colab-df-container {
-      display:flex;
-      gap: 12px;
-    }
-
-    .colab-df-convert {
-      background-color: #E8F0FE;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      display: none;
-      fill: #1967D2;
-      height: 32px;
-      padding: 0 0 0 0;
-      width: 32px;
-    }
-
-    .colab-df-convert:hover {
-      background-color: #E2EBFA;
-      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
-      fill: #174EA6;
-    }
-
-    .colab-df-buttons div {
-      margin-bottom: 4px;
-    }
-
-    [theme=dark] .colab-df-convert {
-      background-color: #3B4455;
-      fill: #D2E3FC;
-    }
-
-    [theme=dark] .colab-df-convert:hover {
-      background-color: #434B5C;
-      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
-      fill: #FFFFFF;
-    }
-  </style>
-
-    <script>
-      const buttonEl =
-        document.querySelector('#df-d865d858-937b-40c2-9b74-bb288930701d button.colab-df-convert');
-      buttonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-
-      async function convertToInteractive(key) {
-        const element = document.querySelector('#df-d865d858-937b-40c2-9b74-bb288930701d');
-        const dataTable =
-          await google.colab.kernel.invokeFunction('convertToInteractive',
-                                                    [key], {});
-        if (!dataTable) return;
-
-        const docLinkHtml = 'Like what you see? Visit the ' +
-          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
-          + ' to learn more about interactive tables.';
-        element.innerHTML = '';
-        dataTable['output_type'] = 'display_data';
-        await google.colab.output.renderOutput(dataTable, element);
-        const docLink = document.createElement('div');
-        docLink.innerHTML = docLinkHtml;
-        element.appendChild(docLink);
-      }
-    </script>
-  </div>
-
-
-<div id="df-e419e447-6efd-43c2-b883-1c681dee10ae">
-  <button class="colab-df-quickchart" onclick="quickchart('df-e419e447-6efd-43c2-b883-1c681dee10ae')" title="Suggest charts" style="display:none;">
-
-<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
-    <g>
-        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"></path>
-    </g>
-</svg>
-  </button>
-
-<style>
-  .colab-df-quickchart {
-      --bg-color: #E8F0FE;
-      --fill-color: #1967D2;
-      --hover-bg-color: #E2EBFA;
-      --hover-fill-color: #174EA6;
-      --disabled-fill-color: #AAA;
-      --disabled-bg-color: #DDD;
-  }
-
-  [theme=dark] .colab-df-quickchart {
-      --bg-color: #3B4455;
-      --fill-color: #D2E3FC;
-      --hover-bg-color: #434B5C;
-      --hover-fill-color: #FFFFFF;
-      --disabled-bg-color: #3B4455;
-      --disabled-fill-color: #666;
-  }
-
-  .colab-df-quickchart {
-    background-color: var(--bg-color);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: none;
-    fill: var(--fill-color);
-    height: 32px;
-    padding: 0;
-    width: 32px;
-  }
-
-  .colab-df-quickchart:hover {
-    background-color: var(--hover-bg-color);
-    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
-    fill: var(--button-hover-fill-color);
-  }
-
-  .colab-df-quickchart-complete:disabled,
-  .colab-df-quickchart-complete:disabled:hover {
-    background-color: var(--disabled-bg-color);
-    fill: var(--disabled-fill-color);
-    box-shadow: none;
-  }
-
-  .colab-df-spinner {
-    border: 2px solid var(--fill-color);
-    border-color: transparent;
-    border-bottom-color: var(--fill-color);
-    animation:
-      spin 1s steps(1) infinite;
-  }
-
-  @keyframes spin {
-    0% {
-      border-color: transparent;
-      border-bottom-color: var(--fill-color);
-      border-left-color: var(--fill-color);
-    }
-    20% {
-      border-color: transparent;
-      border-left-color: var(--fill-color);
-      border-top-color: var(--fill-color);
-    }
-    30% {
-      border-color: transparent;
-      border-left-color: var(--fill-color);
-      border-top-color: var(--fill-color);
-      border-right-color: var(--fill-color);
-    }
-    40% {
-      border-color: transparent;
-      border-right-color: var(--fill-color);
-      border-top-color: var(--fill-color);
-    }
-    60% {
-      border-color: transparent;
-      border-right-color: var(--fill-color);
-    }
-    80% {
-      border-color: transparent;
-      border-right-color: var(--fill-color);
-      border-bottom-color: var(--fill-color);
-    }
-    90% {
-      border-color: transparent;
-      border-bottom-color: var(--fill-color);
-    }
-  }
-</style>
-
-  <script>
-    async function quickchart(key) {
-      const quickchartButtonEl =
-        document.querySelector('#' + key + ' button');
-      quickchartButtonEl.disabled = true;  // To prevent multiple clicks.
-      quickchartButtonEl.classList.add('colab-df-spinner');
-      try {
-        const charts = await google.colab.kernel.invokeFunction(
-            'suggestCharts', [key], {});
-      } catch (error) {
-        console.error('Error during call to suggestCharts:', error);
-      }
-      quickchartButtonEl.classList.remove('colab-df-spinner');
-      quickchartButtonEl.classList.add('colab-df-quickchart-complete');
-    }
-    (() => {
-      let quickchartButtonEl =
-        document.querySelector('#df-e419e447-6efd-43c2-b883-1c681dee10ae button');
-      quickchartButtonEl.style.display =
-        google.colab.kernel.accessAllowed ? 'block' : 'none';
-    })();
-  </script>
-</div>
-    </div>
-  </div>
+<p>71569 rows × 588 columns</p>
 </div>
 </div>
 </div>
-<div id="cell-67" class="cell">
+</div>
+<div id="cell-64" class="cell" data-execution_count="40">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Standardize X_UMAP</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>X_UMAP[<span class="st">'Price Range'</span>] <span class="op">=</span> X_UMAP[<span class="st">'Price Range'</span>].<span class="bu">apply</span>(convert_range_to_midpoint)</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>X_UMAP <span class="op">=</span> X_UMAP.dropna()</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>X_UMAP_scaled <span class="op">=</span> scaler.fit_transform(X_UMAP)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Standardize X_UMAP</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> convert_range_to_midpoint(value):</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">'-'</span> <span class="kw">in</span> <span class="bu">str</span>(value):</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>        low, high <span class="op">=</span> <span class="bu">map</span>(<span class="bu">float</span>, value.split(<span class="st">'-'</span>))</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> (low <span class="op">+</span> high) <span class="op">/</span> <span class="dv">2</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> <span class="st">'+'</span> <span class="kw">in</span> <span class="bu">str</span>(value):</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">float</span>(value.rstrip(<span class="st">'+'</span>))</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> <span class="bu">str</span>(value) <span class="op">==</span> <span class="st">'Free'</span>:</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="dv">0</span></span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">float</span>(value)</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>X_UMAP[<span class="st">'Price Range'</span>] <span class="op">=</span> X_UMAP[<span class="st">'Price Range'</span>].<span class="bu">apply</span>(convert_range_to_midpoint)</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>X_UMAP <span class="op">=</span> X_UMAP.dropna()</span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>X_UMAP_scaled <span class="op">=</span> scaler.fit_transform(X_UMAP)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Apply UMAP</p>
-<div id="cell-69" class="cell" data-outputid="5e2a8c2c-bcef-4a54-be77-df4d0e31ae1f">
+<div id="cell-66" class="cell" data-outputid="5e2a8c2c-bcef-4a54-be77-df4d0e31ae1f" data-execution_count="42">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_components(data, component1, component2):</span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">7</span>))</span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    plt.scatter(data[component1], data[component2], alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(component1)</span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(component2)</span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">'UMAP Dimensionality Reduction'</span>)</span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
-<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>plot_components(ucs, <span class="st">'c1'</span>, <span class="st">'c2'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>umap_5 <span class="op">=</span> umap.UMAP(n_neighbors<span class="op">=</span><span class="dv">5</span>, min_dist<span class="op">=</span><span class="fl">0.1</span>, metric<span class="op">=</span><span class="st">'euclidean'</span>)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>ucs <span class="op">=</span> umap_5.fit_transform(X_UMAP_scaled)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_components(data, component1, component2):</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="dv">7</span>))</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    plt.scatter(data[component1], data[component2], alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(component1)</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(component2)</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="st">'UMAP Dimensionality Reduction'</span>)</span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>    plt.show()</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>ucs <span class="op">=</span> pd.DataFrame(ucs,columns<span class="op">=</span>[<span class="st">'c1'</span>,<span class="st">'c2'</span>])</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>ucs.index <span class="op">=</span> X_UMAP.index</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>plot_components(ucs,<span class="st">'c1'</span>,<span class="st">'c2'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output cell-output-stderr">
+<pre><code>C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\manifold\_spectral_embedding.py:274: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
+  warnings.warn(</code></pre>
+</div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="FinalProject_files/figure-html/cell-39-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="FinalProject_files/figure-html/cell-37-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="cell-70" class="cell" data-outputid="cd6bbb4c-f6bc-4eda-a8d1-d08f2d8fab80">
+<div id="cell-67" class="cell" data-outputid="cd6bbb4c-f6bc-4eda-a8d1-d08f2d8fab80" data-execution_count="43">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List of parameters to try</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>values_of_n_neighbors <span class="op">=</span> [<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">30</span>]</span>
-<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(values_of_n_neighbors), figsize<span class="op">=</span>(<span class="dv">20</span>, <span class="dv">4</span>))</span>
-<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot UMAP plots to visualize local and global structures</span></span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, n <span class="kw">in</span> <span class="bu">enumerate</span>(values_of_n_neighbors):</span>
-<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>    reducer <span class="op">=</span> umap.UMAP(n_neighbors<span class="op">=</span>n, n_components<span class="op">=</span><span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">99</span>)</span>
-<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    embedding <span class="op">=</span> reducer.fit_transform(X_UMAP_scaled)</span>
-<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    axs[i].scatter(embedding[:, <span class="dv">0</span>], embedding[:, <span class="dv">1</span>], s<span class="op">=</span><span class="dv">5</span>)</span>
-<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>    axs[i].set_title(<span class="ss">f'n_neighbors=</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># List of parameters to try</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>values_of_n_neighbors <span class="op">=</span> [<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">15</span>,<span class="dv">20</span>,<span class="dv">30</span>]</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="bu">len</span>(values_of_n_neighbors), figsize<span class="op">=</span>(<span class="dv">20</span>, <span class="dv">4</span>))</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot UMAP plots to visualize local and global structures</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, n <span class="kw">in</span> <span class="bu">enumerate</span>(values_of_n_neighbors):</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    reducer <span class="op">=</span> umap.UMAP(n_neighbors<span class="op">=</span>n, n_components<span class="op">=</span><span class="dv">2</span>, random_state<span class="op">=</span><span class="dv">99</span>)</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    embedding <span class="op">=</span> reducer.fit_transform(X_UMAP_scaled)</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    axs[i].scatter(embedding[:, <span class="dv">0</span>], embedding[:, <span class="dv">1</span>], s<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>    axs[i].set_title(<span class="ss">f'n_neighbors=</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>/usr/local/lib/python3.10/dist-packages/umap/umap_.py:1943: UserWarning: n_jobs value -1 overridden to 1 by setting random_state. Use no seed for parallelism.
+<pre><code>C:\Users\xiaoy\anaconda3\lib\site-packages\umap\umap_.py:1943: UserWarning: n_jobs value -1 overridden to 1 by setting random_state. Use no seed for parallelism.
   warn(f"n_jobs value {self.n_jobs} overridden to 1 by setting random_state. Use no seed for parallelism.")
-/usr/local/lib/python3.10/dist-packages/sklearn/manifold/_spectral_embedding.py:274: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\manifold\_spectral_embedding.py:274: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
   warnings.warn(
-/usr/local/lib/python3.10/dist-packages/umap/umap_.py:1943: UserWarning: n_jobs value -1 overridden to 1 by setting random_state. Use no seed for parallelism.
+C:\Users\xiaoy\anaconda3\lib\site-packages\umap\umap_.py:1943: UserWarning: n_jobs value -1 overridden to 1 by setting random_state. Use no seed for parallelism.
   warn(f"n_jobs value {self.n_jobs} overridden to 1 by setting random_state. Use no seed for parallelism.")
-/usr/local/lib/python3.10/dist-packages/umap/umap_.py:1943: UserWarning: n_jobs value -1 overridden to 1 by setting random_state. Use no seed for parallelism.
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\manifold\_spectral_embedding.py:274: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
+  warnings.warn(
+C:\Users\xiaoy\anaconda3\lib\site-packages\umap\umap_.py:1943: UserWarning: n_jobs value -1 overridden to 1 by setting random_state. Use no seed for parallelism.
   warn(f"n_jobs value {self.n_jobs} overridden to 1 by setting random_state. Use no seed for parallelism.")
-/usr/local/lib/python3.10/dist-packages/umap/umap_.py:1943: UserWarning: n_jobs value -1 overridden to 1 by setting random_state. Use no seed for parallelism.
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\manifold\_spectral_embedding.py:274: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
+  warnings.warn(
+C:\Users\xiaoy\anaconda3\lib\site-packages\umap\umap_.py:1943: UserWarning: n_jobs value -1 overridden to 1 by setting random_state. Use no seed for parallelism.
   warn(f"n_jobs value {self.n_jobs} overridden to 1 by setting random_state. Use no seed for parallelism.")
-/usr/local/lib/python3.10/dist-packages/umap/umap_.py:1943: UserWarning: n_jobs value -1 overridden to 1 by setting random_state. Use no seed for parallelism.
-  warn(f"n_jobs value {self.n_jobs} overridden to 1 by setting random_state. Use no seed for parallelism.")</code></pre>
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\manifold\_spectral_embedding.py:274: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
+  warnings.warn(
+C:\Users\xiaoy\anaconda3\lib\site-packages\umap\umap_.py:1943: UserWarning: n_jobs value -1 overridden to 1 by setting random_state. Use no seed for parallelism.
+  warn(f"n_jobs value {self.n_jobs} overridden to 1 by setting random_state. Use no seed for parallelism.")
+C:\Users\xiaoy\anaconda3\lib\site-packages\sklearn\manifold\_spectral_embedding.py:274: UserWarning: Graph is not fully connected, spectral embedding may not work as expected.
+  warnings.warn(</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="FinalProject_files/figure-html/cell-40-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="FinalProject_files/figure-html/cell-38-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1529,36 +1322,36 @@ C:\Users\Aaron\AppData\Local\Temp\ipykernel_26780\1808023331.py:3: SyntaxWarning
 <section id="clustering" class="level1">
 <h1>Clustering</h1>
 <p>When DBSCAN was applied with an eps value of 7, the algorithm identified 4 distinct clusters within the dataset, but a significant majority of data points, specifically 4023 out of 4069, were categorized as noise. This clustering outcome indicates that while the data does possess some cluster structure, the eps value chosen is not optimal for capturing the majority of the data points within meaningful clusters. The high number of noise points suggests that the data points are sparsely distributed, with only a few dense regions that DBSCAN can identify as clusters.</p>
-<div id="cell-73" class="cell" data-outputid="afc2189e-acdd-4645-87b3-7d0379439b45">
+<div id="cell-70" class="cell" data-outputid="afc2189e-acdd-4645-87b3-7d0379439b45">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> DBSCAN</span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine all the one-hot encoded features into one DataFrame</span></span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>df_extended <span class="op">=</span> pd.concat([df, one_hot_languages, one_hot_tags, one_hot_fea], axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>one_hot_features <span class="op">=</span> pd.concat([pd.DataFrame(df[<span class="st">'OneHot Encoded Languages'</span>].tolist()),</span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>                              pd.DataFrame(df[<span class="st">'OneHot Encoded Tags'</span>].tolist()),</span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>                              pd.DataFrame(df[<span class="st">'OneHot Encoded Features'</span>].tolist())], axis<span class="op">=</span><span class="dv">1</span>)</span>
-<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardize the features</span></span>
-<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
-<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(one_hot_features)</span>
-<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply DBSCAN</span></span>
-<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>db <span class="op">=</span> DBSCAN(eps<span class="op">=</span><span class="dv">7</span>, min_samples<span class="op">=</span><span class="dv">5</span>).fit(X_scaled)</span>
-<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve the labels_</span></span>
-<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> db.labels_</span>
-<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of clusters in labels</span></span>
-<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a>n_clusters_ <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(labels)) <span class="op">-</span> (<span class="dv">1</span> <span class="cf">if</span> <span class="op">-</span><span class="dv">1</span> <span class="kw">in</span> labels <span class="cf">else</span> <span class="dv">0</span>)</span>
-<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>n_noise_ <span class="op">=</span> <span class="bu">list</span>(labels).count(<span class="op">-</span><span class="dv">1</span>)</span>
-<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Estimated number of clusters: </span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> n_clusters_)</span>
-<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Estimated number of noise points: </span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> n_noise_)</span>
-<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> DBSCAN</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine all the one-hot encoded features into one DataFrame</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>df_extended <span class="op">=</span> pd.concat([df, one_hot_languages, one_hot_tags, one_hot_fea], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>one_hot_features <span class="op">=</span> pd.concat([pd.DataFrame(df[<span class="st">'OneHot Encoded Languages'</span>].tolist()),</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>                              pd.DataFrame(df[<span class="st">'OneHot Encoded Tags'</span>].tolist()),</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>                              pd.DataFrame(df[<span class="st">'OneHot Encoded Features'</span>].tolist())], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Standardize the features</span></span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>X_scaled <span class="op">=</span> scaler.fit_transform(one_hot_features)</span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply DBSCAN</span></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a>db <span class="op">=</span> DBSCAN(eps<span class="op">=</span><span class="dv">7</span>, min_samples<span class="op">=</span><span class="dv">5</span>).fit(X_scaled)</span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve the labels_</span></span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> db.labels_</span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of clusters in labels</span></span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a>n_clusters_ <span class="op">=</span> <span class="bu">len</span>(<span class="bu">set</span>(labels)) <span class="op">-</span> (<span class="dv">1</span> <span class="cf">if</span> <span class="op">-</span><span class="dv">1</span> <span class="kw">in</span> labels <span class="cf">else</span> <span class="dv">0</span>)</span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a>n_noise_ <span class="op">=</span> <span class="bu">list</span>(labels).count(<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Estimated number of clusters: </span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> n_clusters_)</span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Estimated number of noise points: </span><span class="sc">%d</span><span class="st">'</span> <span class="op">%</span> n_noise_)</span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Estimated number of clusters: 4
@@ -1567,72 +1360,72 @@ Silhouette Score: 0.7007</code></pre>
 </div>
 </div>
 <p>Spectral clustering was applied with an initial guess of three clusters, which resulted in a silhouette score of approximately -0.0148. This score, which ranges from -1 to 1, with higher values indicating better-defined clusters, suggests that the clusters are overlapping and not well-separated from each other. The negative silhouette score indicates that on average, data points are closer to members of other clusters than to members of their own cluster. This outcome could imply that the number of clusters chosen was not suitable or that the dataset does not have a clear cluster structure as defined by the features provided for spectral clustering.</p>
-<div id="cell-75" class="cell" data-outputid="b6dcc7c2-3176-4540-b869-2bb4c4c3722a">
+<div id="cell-72" class="cell" data-outputid="b6dcc7c2-3176-4540-b869-2bb4c4c3722a">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> SpectralClustering</span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> silhouette_score</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>n_clusters <span class="op">=</span> <span class="dv">3</span></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Spectral Clustering</span></span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>spectral_model <span class="op">=</span> SpectralClustering(n_clusters<span class="op">=</span>n_clusters, affinity<span class="op">=</span><span class="st">'nearest_neighbors'</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>labels_spectral <span class="op">=</span> spectral_model.fit_predict(X_scaled)</span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate the cluster performance using silhouette score</span></span>
-<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>silhouette_avg <span class="op">=</span> silhouette_score(X_scaled, labels_spectral)</span>
-<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Silhouette Score for Spectral Clustering:'</span>, silhouette_avg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> SpectralClustering</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> silhouette_score</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>n_clusters <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Spectral Clustering</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>spectral_model <span class="op">=</span> SpectralClustering(n_clusters<span class="op">=</span>n_clusters, affinity<span class="op">=</span><span class="st">'nearest_neighbors'</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>labels_spectral <span class="op">=</span> spectral_model.fit_predict(X_scaled)</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate the cluster performance using silhouette score</span></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>silhouette_avg <span class="op">=</span> silhouette_score(X_scaled, labels_spectral)</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Silhouette Score for Spectral Clustering:'</span>, silhouette_avg)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Silhouette Score for Spectral Clustering: -0.03506217018141109</code></pre>
 </div>
 </div>
 <p>The application of Gaussian Mixture Models to the dataset yielded a silhouette score of approximately 0.1409. suggests that the clusters are moderately defined, with some level of separation between them. The GMM has captured some of the data’s structure. The positive silhouette score implies that, on average, data points are situated closer to their own cluster centers than to other clusters, which could mean the model has identified meaningful groupings within the dataset.</p>
-<div id="cell-77" class="cell" data-outputid="87554b16-a496-40bc-b0f2-7d4d6722d59f">
+<div id="cell-74" class="cell" data-outputid="87554b16-a496-40bc-b0f2-7d4d6722d59f">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.mixture <span class="im">import</span> GaussianMixture</span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>n_components <span class="op">=</span> <span class="dv">3</span></span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the Gaussian Mixture Model</span></span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>gmm <span class="op">=</span> GaussianMixture(n_components<span class="op">=</span>n_components, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model and predict the clusters</span></span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>gmm_labels <span class="op">=</span> gmm.fit_predict(X_scaled)</span>
-<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate the cluster performance using silhouette score</span></span>
-<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>silhouette_avg_gmm <span class="op">=</span> silhouette_score(X_scaled, gmm_labels)</span>
-<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Silhouette Score for GMM:'</span>, silhouette_avg_gmm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.mixture <span class="im">import</span> GaussianMixture</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>n_components <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the Gaussian Mixture Model</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>gmm <span class="op">=</span> GaussianMixture(n_components<span class="op">=</span>n_components, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model and predict the clusters</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>gmm_labels <span class="op">=</span> gmm.fit_predict(X_scaled)</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Evaluate the cluster performance using silhouette score</span></span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>silhouette_avg_gmm <span class="op">=</span> silhouette_score(X_scaled, gmm_labels)</span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Silhouette Score for GMM:'</span>, silhouette_avg_gmm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Silhouette Score for GMM: 0.14086854939957788</code></pre>
 </div>
 </div>
 <p>The best Gaussian Mixture Model (GMM) configuration, based on silhouette scores, used 2 clusters with a ‘spherical’ covariance type, achieving a silhouette score of 0.2521. This indicates moderate separation between clusters, suggesting that this model configuration relatively effectively captures the structure of the dataset.</p>
-<div id="cell-79" class="cell" data-outputid="d0a2a514-9c8c-4bc0-e616-d514a7eda9c1">
+<div id="cell-76" class="cell" data-outputid="d0a2a514-9c8c-4bc0-e616-d514a7eda9c1">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test different numbers of clusters and covariance types</span></span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>n_components <span class="op">=</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">7</span>)  <span class="co"># Example: Testing between 2 and 6 clusters</span></span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>covariance_types <span class="op">=</span> [<span class="st">'full'</span>, <span class="st">'tied'</span>, <span class="st">'diag'</span>, <span class="st">'spherical'</span>]</span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>best_score <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>best_model <span class="op">=</span> <span class="va">None</span></span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> n_components:</span>
-<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> cov_type <span class="kw">in</span> covariance_types:</span>
-<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>        gmm <span class="op">=</span> GaussianMixture(n_components<span class="op">=</span>n, covariance_type<span class="op">=</span>cov_type, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>        gmm_labels <span class="op">=</span> gmm.fit_predict(X_scaled)</span>
-<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>        silhouette_avg <span class="op">=</span> silhouette_score(X_scaled, gmm_labels)</span>
-<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'For n_clusters=</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">, covariance_type=</span><span class="sc">{</span>cov_type<span class="sc">}</span><span class="ss">, the average silhouette_score is: </span><span class="sc">{</span>silhouette_avg<span class="sc">}</span><span class="ss">'</span>)</span>
-<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> silhouette_avg <span class="op">&gt;</span> best_score:</span>
-<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>            best_score <span class="op">=</span> silhouette_avg</span>
-<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>            best_model <span class="op">=</span> gmm</span>
-<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Best Silhouette Score: </span><span class="sc">{</span>best_score<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test different numbers of clusters and covariance types</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>n_components <span class="op">=</span> <span class="bu">range</span>(<span class="dv">2</span>, <span class="dv">7</span>)  <span class="co"># Example: Testing between 2 and 6 clusters</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>covariance_types <span class="op">=</span> [<span class="st">'full'</span>, <span class="st">'tied'</span>, <span class="st">'diag'</span>, <span class="st">'spherical'</span>]</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>best_score <span class="op">=</span> <span class="op">-</span><span class="dv">1</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>best_model <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> n <span class="kw">in</span> n_components:</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> cov_type <span class="kw">in</span> covariance_types:</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>        gmm <span class="op">=</span> GaussianMixture(n_components<span class="op">=</span>n, covariance_type<span class="op">=</span>cov_type, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>        gmm_labels <span class="op">=</span> gmm.fit_predict(X_scaled)</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>        silhouette_avg <span class="op">=</span> silhouette_score(X_scaled, gmm_labels)</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f'For n_clusters=</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">, covariance_type=</span><span class="sc">{</span>cov_type<span class="sc">}</span><span class="ss">, the average silhouette_score is: </span><span class="sc">{</span>silhouette_avg<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> silhouette_avg <span class="op">&gt;</span> best_score:</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>            best_score <span class="op">=</span> silhouette_avg</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>            best_model <span class="op">=</span> gmm</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Best Silhouette Score: </span><span class="sc">{</span>best_score<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>For n_clusters=2, covariance_type=full, the average silhouette_score is: 0.03187291180219226
@@ -1658,52 +1451,52 @@ For n_clusters=6, covariance_type=spherical, the average silhouette_score is: -0
 Best Silhouette Score: 0.2520732371419254</code></pre>
 </div>
 </div>
-<div id="cell-80" class="cell">
+<div id="cell-77" class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>gmm <span class="op">=</span> GaussianMixture(n_components<span class="op">=</span><span class="dv">2</span>, covariance_type <span class="op">=</span><span class="st">'spherical'</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model and predict the clusters</span></span>
-<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>gmm_labels <span class="op">=</span> gmm.fit_predict(X_scaled)</span>
-<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the GMM cluster labels to original DataFrame for further analysis</span></span>
-<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'GMM_Cluster_Labels'</span>] <span class="op">=</span> gmm_labels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>gmm <span class="op">=</span> GaussianMixture(n_components<span class="op">=</span><span class="dv">2</span>, covariance_type <span class="op">=</span><span class="st">'spherical'</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the model and predict the clusters</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>gmm_labels <span class="op">=</span> gmm.fit_predict(X_scaled)</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the GMM cluster labels to original DataFrame for further analysis</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'GMM_Cluster_Labels'</span>] <span class="op">=</span> gmm_labels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
 <section id="prediction" class="level1">
 <h1>Prediction</h1>
 <p>The results of the Mean Absolute Error (MAE) of 7.486. This metric indicates the average magnitude of errors in predicting the discounted prices of Steam games, suggesting that on average, the model’s predictions deviate from the actual prices by approximately 7.486 units.</p>
-<div id="cell-83" class="cell" data-outputid="ccb5088b-d22c-4e07-8fa9-59ef8fcf3756">
+<div id="cell-80" class="cell" data-outputid="ccb5088b-d22c-4e07-8fa9-59ef8fcf3756">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
-<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_absolute_error</span>
-<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Select features and target variable</span></span>
-<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">'Recent Reviews'</span>, <span class="st">'Recent Positive Ratio'</span>, <span class="st">'Reviews Total'</span>,</span>
-<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">'Positive Ratio Total'</span>, <span class="st">'Total Languages Supported'</span>, <span class="st">'GMM_Cluster_Labels'</span>]</span>
-<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> <span class="st">'Discounted Price'</span></span>
-<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the data</span></span>
-<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[features]</span>
-<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[target]</span>
-<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Split the data into training and testing sets</span></span>
-<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the linear regression model</span></span>
-<span id="cb56-18"><a href="#cb56-18" aria-hidden="true" tabindex="-1"></a>regressor <span class="op">=</span> LinearRegression()</span>
-<span id="cb56-19"><a href="#cb56-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-20"><a href="#cb56-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
-<span id="cb56-21"><a href="#cb56-21" aria-hidden="true" tabindex="-1"></a>regressor.fit(X_train, y_train)</span>
-<span id="cb56-22"><a href="#cb56-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-23"><a href="#cb56-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb56-24"><a href="#cb56-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Making predictions and evaluating the model</span></span>
-<span id="cb56-25"><a href="#cb56-25" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> regressor.predict(X_test)</span>
-<span id="cb56-26"><a href="#cb56-26" aria-hidden="true" tabindex="-1"></a>mae <span class="op">=</span> mean_absolute_error(y_test, predictions)</span>
-<span id="cb56-27"><a href="#cb56-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Mean Absolute Error: </span><span class="sc">{</span>mae<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_absolute_error</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Select features and target variable</span></span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>features <span class="op">=</span> [<span class="st">'Recent Reviews'</span>, <span class="st">'Recent Positive Ratio'</span>, <span class="st">'Reviews Total'</span>,</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>            <span class="st">'Positive Ratio Total'</span>, <span class="st">'Total Languages Supported'</span>, <span class="st">'GMM_Cluster_Labels'</span>]</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> <span class="st">'Discounted Price'</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Prepare the data</span></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df[features]</span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[target]</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Split the data into training and testing sets</span></span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize the linear regression model</span></span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>regressor <span class="op">=</span> LinearRegression()</span>
+<span id="cb55-19"><a href="#cb55-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-20"><a href="#cb55-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the model</span></span>
+<span id="cb55-21"><a href="#cb55-21" aria-hidden="true" tabindex="-1"></a>regressor.fit(X_train, y_train)</span>
+<span id="cb55-22"><a href="#cb55-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-23"><a href="#cb55-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-24"><a href="#cb55-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Making predictions and evaluating the model</span></span>
+<span id="cb55-25"><a href="#cb55-25" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> regressor.predict(X_test)</span>
+<span id="cb55-26"><a href="#cb55-26" aria-hidden="true" tabindex="-1"></a>mae <span class="op">=</span> mean_absolute_error(y_test, predictions)</span>
+<span id="cb55-27"><a href="#cb55-27" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f'Mean Absolute Error: </span><span class="sc">{</span>mae<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Mean Absolute Error: 7.485788424386638</code></pre>
