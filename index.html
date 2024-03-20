@@ -93,6 +93,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#pca" id="toc-pca" class="nav-link" data-scroll-target="#pca">PCA</a></li>
   <li><a href="#umap" id="toc-umap" class="nav-link" data-scroll-target="#umap">UMAP</a></li>
   <li><a href="#clustering" id="toc-clustering" class="nav-link" data-scroll-target="#clustering">Clustering</a></li>
+  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction">Prediction</a></li>
   <li><a href="#proposed-solution" id="toc-proposed-solution" class="nav-link" data-scroll-target="#proposed-solution">Proposed Solution</a></li>
   <li><a href="#evaluation-metrics" id="toc-evaluation-metrics" class="nav-link" data-scroll-target="#evaluation-metrics">Evaluation Metrics</a></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion">Discussion</a>
@@ -1793,8 +1794,11 @@ Best Silhouette Score: 0.2520732371419254</code></pre>
 <span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'GMM_Cluster_Labels'</span>] <span class="op">=</span> gmm_labels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section>
+<section id="prediction" class="level1">
+<h1>Prediction</h1>
 <p>The results of the Mean Absolute Error (MAE) of 7.486. This metric indicates the average magnitude of errors in predicting the discounted prices of Steam games, suggesting that on average, the model’s predictions deviate from the actual prices by approximately 7.486 units.</p>
-<div id="cell-76" class="cell" data-outputid="ccb5088b-d22c-4e07-8fa9-59ef8fcf3756">
+<div id="cell-77" class="cell" data-outputid="ccb5088b-d22c-4e07-8fa9-59ef8fcf3756">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
@@ -1851,16 +1855,16 @@ Best Silhouette Score: 0.2520732371419254</code></pre>
 </section>
 <section id="model-evaluation" class="level4">
 <h4 class="anchored" data-anchor-id="model-evaluation">Model Evaluation:</h4>
-<p>Clustering performance will be evaluated using the Adjusted Rand Index (ARI), and the predictive model’s accuracy for discount prices will be assessed using Mean Absolute Error (MAE).<br></p>
+<p>Clustering performance will be evaluated using the Silhouette Score, and the predictive model’s accuracy for discount prices will be assessed using Mean Absolute Error (MAE).<br></p>
 </section>
 </section>
 <section id="evaluation-metrics" class="level1">
 <h1>Evaluation Metrics</h1>
 <p><strong>Prediction Accuracy</strong>: Mean Absolute Error (MAE)</p>
 <p>It measures the average magnitude of errors in a set of predictions, without considering their direction. It’s calculated as the average of the absolute differences between predicted values and actual values, making it a straightforward and interpretable metric for assessing price prediction accuracy</p>
-<p><strong>Clustering Performance</strong>: Adjusted Ranked Index (ARI)</p>
-<p>The Adjusted Rand Index (ARI) measures the similarity between two clusterings, considering all pairs of samples and counting pairs that are assigned in the same or different clusters in the predicted and true clusterings. The ARI is adjusted for the chance grouping of elements, making it a more reliable metric for the quality of the clustering.</p>
-<p>MAE will give us a direct measure of the accuracy of the price predictions, while ARI will assess the effectiveness of our clustering, ensuring that the foundation for our predictions—how games are grouped based on tags and features—is sound. This dual approach allows us to optimize both the clustering of games and the accuracy of the price predictions.</p>
+<p><strong>Clustering Performance</strong>: Silhouette Score</p>
+<p>The Silhouette Score is a metric used to evaluate the quality of clustering in a dataset, offering a means to assess how well each data point fits within its cluster relative to other clusters. It values range from -1 to 1, where values closer to 1 signify that data points are well matched to their own cluster and poorly matched to neighboring clusters, indicating clear and distinct clustering. A score around 0 suggests that the clustering borders might be overlapping, and a negative score indicates that data points might have been better suited to neighboring clusters.</p>
+<p>MAE will give us a direct measure of the accuracy of the price predictions, while Silhouette Score will assess the effectiveness of our clustering, ensuring that the foundation for our predictions—how games are grouped based on tags and features—is sound. This dual approach allows us to optimize both the clustering of games and the accuracy of the price predictions.</p>
 </section>
 <section id="discussion" class="level1">
 <h1>Discussion</h1>
@@ -1885,106 +1889,6 @@ Best Silhouette Score: 0.2520732371419254</code></pre>
 <section id="footnotes" class="level1">
 <h1>Footnotes</h1>
 <p><a name="dunote" href=""></a>1.<a href="#du">^</a>: L. Du, “Steam Game Discount Prediction Using Machine Learning Methods,” 2021 3rd International Conference on Machine Learning, Big Data and Business Intelligence (MLBDBI), Taiyuan, China, 2021, pp.&nbsp;149-152, doi: 10.1109/MLBDBI54094.2021.00037.. https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=9730988&amp;isnumber=9730940<br> <a name="linnote" href=""></a>2.<a href="#lin">^</a>: Lin, D., Bezemer, CP., Zou, Y. et al.&nbsp;“An empirical study of game reviews on the Steam platform”. Empir Software Eng 24, 170–207 (2019). https://doi.org/10.1007/s10664-018-9627-4<br></p>
-<div id="cell-81" class="cell" data-outputid="e619ca6c-eaeb-41da-d6b9-57edbc0540e7">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.head(<span class="dv">100</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>     GameID Release Date  Original Price  Discounted Price  Recent Reviews  \
-0   1086940   2023-08-03           29.99             29.99          128900   
-1       730   2012-08-21           14.99             14.99           75284   
-2   1172470   2020-11-04            0.00              0.00           18581   
-3   1551360   2021-11-08           34.78             17.39            4120   
-4   1938090   2022-10-27            0.00              0.00            8257   
-..      ...          ...             ...               ...             ...   
-95   892970   2021-02-02           10.49             10.49            2638   
-96  1284210   2022-08-23            0.00              0.00               0   
-97   239140   2016-04-21           32.99              6.59            1847   
-98  2273430   2023-08-15           10.49              9.23            1149   
-99  1817070   2022-08-12           49.99             49.99            1819   
-
-    Recent Positive Ratio  Reviews Total  Positive Ratio Total  \
-0                    0.96         188617                  0.94   
-1                    0.89         428921                  0.88   
-2                    0.65         701597                  0.80   
-3                    0.87         123162                  0.88   
-4                    0.49         236876                  0.57   
-..                    ...            ...                   ...   
-95                   0.90         355096                  0.95   
-96                   0.86          10857                  0.88   
-97                   0.93         281856                  0.95   
-98                   0.84              0                  0.00   
-99                   0.95          52909                  0.96   
-
-                             OneHot Encoded Languages  \
-0   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-1   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, ...   
-2   [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-3   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-4   [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-..                                                ...   
-95  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-96  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-97  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-98  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-99  [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-
-                                  OneHot Encoded Tags  \
-0   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-1   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-2   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-3   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-4   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-..                                                ...   
-95  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-96  [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, ...   
-97  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-98  [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-99  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...   
-
-                              OneHot Encoded Features Price Range  \
-0   [0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, ...       15-30   
-1   [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...        0-15   
-2   [0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, ...        0-15   
-3   [0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, ...       30-45   
-4   [1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, ...        0-15   
-..                                                ...         ...   
-95  [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, ...        0-15   
-96  [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, ...        0-15   
-97  [0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, ...       30-45   
-98  [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...        0-15   
-99  [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ...         45+   
-
-    Total Languages Supported  Cluster_Labels  Spectral_Cluster_Labels  \
-0                          13              -1                        0   
-1                          28              -1                        0   
-2                          14              -1                        0   
-3                          16              -1                        0   
-4                          14              -1                        0   
-..                        ...             ...                      ...   
-95                         12              -1                        0   
-96                          4              -1                        0   
-97                         17              -1                        0   
-98                          3              -1                        0   
-99                         22              -1                        0   
-
-    GMM_Cluster_Labels  
-0                    1  
-1                    1  
-2                    1  
-3                    1  
-4                    1  
-..                 ...  
-95                   1  
-96                   1  
-97                   1  
-98                   1  
-99                   1  
-
-[100 rows x 16 columns]</code></pre>
-</div>
-</div>
 </section>
 
 </main>
